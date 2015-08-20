@@ -6,10 +6,7 @@ Vagrant.configure(2) do |config|
   config.vm.hostname = "oracle-xe"
 
   config.vm.provider "virtualbox" do |vb|
-    # Display the VirtualBox GUI when booting the machine
-    #vb.gui = true
-  
-    # Customize the amount of memory on the VM:
+    vb.name = "oracle-xe"
     vb.memory = "2048"
   end
 
@@ -19,7 +16,7 @@ Vagrant.configure(2) do |config|
     # docker build --rm -t oracle-xe .
     d.build_image "/vagrant", args: "-t oracle-xe"
 
-    # docker run --name oracle-xe -d
+    # docker run --name -p 1521:1521 -d oracle-xe
     d.run "oracle-xe", image: "oracle-xe:latest", daemonize: true, args: "-p 1521:1521"
   end
 end

@@ -1,6 +1,57 @@
 # Oracle XE no Ubuntu utilizando o Docker
 
-Este projeto possibilita a execução do [Oracle Database 11g Express Edition](http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html) (Oracle XE) num Ubuntu 14.04 rodando em um contêiner Docker. Se, no lugar do Docker, você estiver procurando uma alternativa similar utilizando o Vagrant veja o projeto https://github.com/paulojeronimo/vagrant-ubuntu-oracle-xe.
+Este projeto possibilita a execução do [Oracle Database 11g Express Edition](http://www.oracle.com/technetwork/database/database-technologies/express-edition/overview/index.html) (Oracle XE) em uma box Vagrant ou num contêiner Docker. De qualquer forma, quando utilizado o Vagrant, o provisionamento da box será realizado através do Docker. Quando a opção for utilizar o Docker, no Windows ou no OS X, a máquina que executa o servidor Docker poderá ser construída (mais facilmente) através de uma das seguintes formas: utilizando o [Boot2docker](http://boot2docker.io/) ou, mais a recentemente, o [Docker Machine](boot2docker://docs.docker.com/machine/).
+
+## Optando pelo Vagrant
+
+O Vagrant pode provisionar uma VM utilizando o Docker. Talvez essa seja a solução mais simples e rápida para utilizar este projeto no caso de você estar utilizando um ambiente Windows ou OS X. Não será necessário instalar o Docker pois o Vagrant sabe como provisionar máquinas através dele mesmo sem o uso de seus binários.
+
+Optando pelo uso do Vagrant, a execução do Oracle XE através deste projeto pode ser realizada com um único comando:
+```
+cp Vagrantfile.1 Vagrantfile
+vagrant up
+```
+
+O provisionamento da máquina criada será realizado através do Docker seguindo as instruções do [Vagrantfile](Vagrantfile) e, após a finalização desse processo, você poderá utilizar acessar o Oracle XE.
+
+### Contetando-se ao Oracle XE
+
+Utilize as seguintes informações para estabelecer uma conexão:
+* hostname: localhost
+* port: 1521
+* sid: xe
+* username: system
+* password: oracle
+
+### Salvando a box
+
+Salvar uma box é uma boa opção para poder restaurá-la rapidamente e não precisar perder tempo no seu provisionamento. Para isso, pare a box:
+```
+vagrant halt
+```
+
+Em seguida, empacote-a:
+```
+vagrant package --output oracle-xe.box
+```
+
+Agora, destrua a box (se tiver certeza que já foi gerado o arquivo ``package.box``):
+```
+vagrant destroy
+```
+
+### Restaurando e utilizando a box salva
+```
+vagrant box add --name oracle-xe oracle-xe.box
+cp Vagrantfile.2 Vagrantfile
+vagrant up
+```
+
+### Optando pelo Docker
+
+Se você estiver utilizando o Linux em teu desktop, o uso do Vagrant perde o sentido. Nesse caso, é extremamente mais simples e rápida a utilização do Docker.
+
+Em ambientes Windows ou OS X, se você não desejar utilizar o Vagrant, você precisará fazer a instalação do Boot2Docker ou do Docker Machine. Essas aplicações são necessárias para criar uma VM (Linux) que executará o servidor Docker e o contêiner oracle-xe criado neste projeto.
 
 ## Instalação do Docker
 
@@ -8,7 +59,31 @@ No OS X, as instruções de instalação do Docker estão em https://docs.docker
 
 Para utilizar o Docker no Fedora, leia https://docs.docker.com/installation/fedora/.
 
-No Windows, siga os procedimentos descritos em http://docs.docker.com/windows/step_one/.
+No Windows, siga os procedimentos descritos em http://docs.docker.com/windows/step_one/. Alternativamente, utilize o [Chocolatey](http://chocolatey.org) para fazer a instalação dessas ferramentas. Instruções para isso podem ser encontradas em https://github.com/paulojeronimo/dicas-windows/blob/master/chocolatey.md#docker-e-docker-machine.
+
+## Utilização do Docker Image
+
+Um servidor Docker pode ser hospedado no ambiente Windows se for criada uma máquina virtual Linux através do Boot2Docker ou do Docker Image. O Boot2Docker é um projeto menos abrangente e mais simples que o Docker Image. Esse último é a solução mais atual.
+
+Todos os procedimentos a seguir são realizados num shell (Bash) aberto pelo Cygwin.
+
+### Criação da VM (utilizando um shell Cygwin)
+
+```
+docker-machine env --shell bash dm1
+```
+
+### Configuração das variáveis de ambiente utilizadas pelo Docker
+
+```
+eval $(docker-machine env --shell bash dm1)
+```
+
+### Determinação do IP do contêiner
+
+```
+docker-machine ip dm1
+```
 
 ## Carregamento da imagem
 
