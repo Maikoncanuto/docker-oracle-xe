@@ -1,4 +1,4 @@
-.DS_Store
+.vagrant
+Vagrantfile
 oracle-xe.tar
 oracle-xe.box
-.vagrant

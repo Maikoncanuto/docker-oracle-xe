@@ -40,6 +40,8 @@ Agora, destrua a box (se tiver certeza que já foi gerado o arquivo ``package.bo
 vagrant destroy
 ```
 
+Uma nota: No Cygwin, [ocorre um erro](https://groups.google.com/forum/#!topic/vagrant-up/ExFet5jMomU) na tentativa de execução do comando acima. A solução é acrescentar o parâmetro ``--force`` ao final desse comando.
+
 ### Restaurando e utilizando a box salva
 ```
 vagrant box add --name oracle-xe oracle-xe.box
